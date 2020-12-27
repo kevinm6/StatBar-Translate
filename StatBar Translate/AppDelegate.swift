@@ -2,113 +2,150 @@
 //  AppDelegate.swift
 //  StatBar Translate
 //
-//  Created by Kevin Manca on 19/12/20.
+//  Created by Kevin Manca on 20/12/20.
 //
 
-import Foundation
 import Cocoa
 import WebKit
 
-
 @NSApplicationMain
-class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSPopoverDelegate, WKNavigationDelegate {
-   
-   // MARK: - vars
-   private var statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
-	private let popover = NSPopover()
-   private var wkView: WKWebView?
-	var eventMonitor: EventMonitor?
-   private var timer: Timer?
+class AppDelegate: NSObject,
+                   NSApplicationDelegate,
+                   NSMenuDelegate,
+                   NSPopoverDelegate,
+                   WKNavigationDelegate {
    
    
    // MARK: - Application Infos
-	var appInfo: (name: String, version: String, build: String) {
-      let bndl = Bundle.main
-		if let name = bndl.object(forInfoDictionaryKey: "CFBundleName") as? String,
-			let ver = bndl.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String,
-			let build = bndl.object(forInfoDictionaryKey: "CFBundleVersion") as? String {
-			return (name, ver, build)
-		} else {
-			return ("StatBar Translate", "#.#", "#.#")
-		}
-	}
+   var appInfo: (name: String,
+                 version: String,
+                 build: String) {
+      let b = Bundle.main
+      if let name = b.object(forInfoDictionaryKey: "CFBundleName") as? String,
+         let ver = b.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String,
+         let build = b.object(forInfoDictionaryKey: "CFBundleVersion") as? String {
+
+         return (name, ver, build)
+      } else { return ("StatBar Translate", "#.#", "#.#") }
+   }
+   
+   
+   // MARK: - vars
+   private var statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
+   
+   private var popv: NSPopover = {
+      let p = NSPopover()
+      p.behavior = .semitransient
+      p.contentViewController?.view.window?.styleMask = .titled
+
+      return p
+    }()
+   
+   private var wkView: WKWebView = {
+      let cnfg = WKWebViewConfiguration()
+      let w = WKWebView(frame: NSRect(x: 0,
+                                        y: 0,
+                                        width: 600,
+                                        height: 400),
+                        configuration: cnfg)
+      return w
+   }()
 	
+   private var wind: NSWindow?
+   
+   private var timer: Timer?
+   
+   var eventMonitor: EventMonitor?
+   
    
    // MARK: - Popover
-   func showPopover(sender: AnyObject?, show: Bool) {
+   @objc func showPopover(sender: AnyObject?, show: Bool) {
       if show {
          if let button = statusItem.button {
-            popover.show(relativeTo: button.bounds, of: button, preferredEdge: NSRectEdge.minY)
+            popv.show(relativeTo: button.bounds, of: button, preferredEdge: NSRectEdge.minY)
          }
          
          timer?.invalidate()
-         if wkView?.url == nil || wkView?.url?.absoluteString == "about:blank" {
-            if let url = URL(string: "https://translate.google.com") {
-               let req = URLRequest(url: url)
-               wkView?.load(req)
-            }
+         if wkView.url == nil || wkView.url?.absoluteString == "about:blank" {
+            openWebPage(site: "https://translate.google.com")
          }
-         eventMonitor?.start()
       } else {
-         popover.performClose(sender)
-         eventMonitor?.stop()
-         startTimer()
+         popv.performClose(sender)
       }
       
 	}
  
+   func popoverDidShow(_ notification: Notification) {eventMonitor?.start()}
+   
+   func popoverDidClose(_ notification: Notification) {
+      eventMonitor?.stop()
+      startTimer()
+   }
+   
+   func popoverShouldDetach(_ popover: NSPopover) -> Bool {
+      popover.contentViewController?.view.window?.standardWindowButton(.closeButton)?.contentTintColor = .systemGray
+      eventMonitor?.stop()
+      return true
+   }
+   
+   func detachableWindow(for popover: NSPopover) -> NSWindow? {
+      if let ctrl = popover.contentViewController {
+         ctrl.title = (appInfo.name)   // Window name
+         
+         wind? = NSWindow()
+         wind?.contentViewController = ctrl
+         wind?.isMovable = true
+         wind?.styleMask = .titled
+         wind?.tabbingMode = .disallowed
+         wind?.titlebarAppearsTransparent = true
+         
+         return wind
+      } else {return NSWindow()}
+   }
+   
+   @objc func closePopover(_ sender:Any?) {popv.performClose(sender)}
+   
    
    // MARK: - Timer
    func startTimer() {
-      self.timer = Timer.scheduledTimer(timeInterval: 600,target: self,
-                                   selector: #selector(fireTimer),
-                                   userInfo: nil, repeats: false)
+      self.timer = Timer.scheduledTimer(timeInterval: 600,
+                                        target: self,
+                                        selector: #selector(fireTimer),
+                                        userInfo: nil,
+                                        repeats: false)
    }
    
    @objc func fireTimer() {
       timer?.invalidate()
-      if let url = URL(string: "about:blank"){
-      let req = URLRequest(url: url)
-         wkView?.load(req)
-      }
+      openWebPage(site: "about:blank")
    }
 	
+   
 	//	MARK: - OBJC FUNC
 	
 	@objc func statusItemButtonActivated(sender: AnyObject?) {
 		let ev = NSApp.currentEvent!
-		
-      if popover.isShown {
-         showPopover(sender: sender, show: false)
-         startTimer()
-         eventMonitor?.stop()
-      }
+      
+      if popv.isShown {closePopover(sender)}
+      if (wind != nil) {wind?.performClose(sender)}
       
 		switch ev.type {
 		case .leftMouseUp:
-			if !popover.isShown {
+			if !popv.isShown {
 				showPopover(sender: sender, show: true)
          }
-			if (ev.modifierFlags == .option) || (ev.modifierFlags == .control) {
-            eventMonitor?.stop()
-            menuConfig()
-            startTimer()
-			}
-		case .rightMouseUp:
-         eventMonitor?.stop()
-			menuConfig()
+			if (ev.modifierFlags == .option) || (ev.modifierFlags == .control) {buildContextMenu()}
+         
+		case .rightMouseUp: buildContextMenu()
 			
 		default: break
 		}
 	}
 
-	@objc func quitApp(_ sender: Any) {
-			NSApplication.shared.terminate(self)
-	}
-
+	@objc func quitApp(_ sender: Any) {NSApplication.shared.terminate(self)}
    
    // cleaning func
-   @objc func clean() {
+   @objc func cleanCacheCookies() {
         HTTPCookieStorage.shared.removeCookies(since: Date.distantPast)
 
         WKWebsiteDataStore.default().fetchDataRecords(ofTypes: WKWebsiteDataStore.allWebsiteDataTypes()) { records in
@@ -116,11 +153,12 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSPopoverDel
                 WKWebsiteDataStore.default().removeData(ofTypes: record.dataTypes, for: [record], completionHandler: {})
             }
         }
+      openWebPage(site: "about:blank")
     }
    
    
 	// MARK: - construct menu
-	func menuConfig() {
+	func buildContextMenu() {
 		let s = self.statusItem
 		let m = NSMenu()
 		// 0, 1 -App Info
@@ -128,11 +166,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSPopoverDel
 		m.addItem(withTitle: "Version \(appInfo.version), Build (\(appInfo.build))" , action: nil, keyEquivalent: "")
 		// 2
 		m.addItem(NSMenuItem.separator())
-      // 5
-      m.addItem(NSMenuItem(title: "Remove cache & cookies", action: #selector(clean), keyEquivalent: ""))
-      // 6
+      // 3
+      m.addItem(NSMenuItem(title: "Remove cache & cookies", action: #selector(cleanCacheCookies), keyEquivalent: ""))
+      // 4
       m.addItem(NSMenuItem.separator())
-		// 7 -Quit application
+		// 5 -Quit application
 		m.addItem(NSMenuItem(title: "Quit", action: #selector(quitApp(_:)), keyEquivalent: "q"))
 		
 		s.menu = m
@@ -141,50 +179,55 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate, NSPopoverDel
 	}
 
 	
-   // MARK: - helper
+   // MARK: - helper funcs
    func translateService(pboard: NSPasteboard, userData: String, error: AutoreleasingUnsafeMutablePointer<NSString?>) {
-      popover.show(relativeTo: NSRect.init(x: 0, y: 0, width: 100, height: 100), of: (NSApp.mainWindow?.contentView)!, preferredEdge: NSRectEdge.minY)
+      popv.show(relativeTo: NSRect.init(x: 0,
+                                        y: 0,
+                                        width: 100,
+                                        height: 100),
+                of: (NSApp.mainWindow?.contentView)!, preferredEdge: NSRectEdge.minY)
+   }
+   
+   func openWebPage(site: String) {
+      if let u = URL(string: site) {
+      let r = URLRequest(url: u)
+         wkView.load(r)
+      }
    }
    
    
    // MARK: - App Notifications
    
    func applicationDidFinishLaunching(_ notification: Notification) {
-   
       // status item
-      if let btn = statusItem.button {
-         btn.isHidden = false
-         btn.image = #imageLiteral(resourceName: "StatBarBtnImg")
-         btn.image?.isTemplate = true
-         btn.action = #selector(statusItemButtonActivated(sender:))
-         btn.sendAction(on: [.leftMouseUp, .rightMouseUp])
+      if let b = statusItem.button {
+         b.isHidden = false
+         b.image = NSImage(named: "StatBarBtnImg")
+         b.image?.isTemplate = true
+         b.action = #selector(statusItemButtonActivated(sender:))
+         b.sendAction(on: [.leftMouseUp, .rightMouseUp])
+         b.toolTip = "Drag the arrow of the window to pin"
       }
       statusItem.isVisible = true
       
       // wkview
-      wkView = WKWebView(frame: NSRect(x: 0,
-                                        y: 0,
-                                        width: 600,
-                                        height: 400))
-      if let w = self.wkView {
-         w.navigationDelegate = self
-         
-         let ctrl = NSViewController()
-         ctrl.view = w
-         popover.contentViewController = ctrl
-      }
+      wkView.navigationDelegate = self
       
+      let ctrl = NSViewController()
+      
+      ctrl.view = wkView
       // popover
-      popover.delegate = self
-      popover.behavior = .transient
-     
+      popv.delegate = self
+      popv.behavior = .transient
+      popv.animates = false
+      popv.contentViewController = ctrl
+      
       // event monitor
       eventMonitor = EventMonitor(mask: [.leftMouseUp, .rightMouseUp]) { [weak self] event in
-         if let strongSelf = self, strongSelf.popover.isShown {
+         if let strongSelf = self, strongSelf.popv.isShown {
             strongSelf.showPopover(sender: event, show: false)
          }
       }
-     
       NSApplication.shared.servicesProvider = self
    }
    
@@ -217,4 +260,3 @@ public class EventMonitor {
       }
    }
 }
-
