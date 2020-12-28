@@ -36,11 +36,10 @@ class AppDelegate: NSObject,
    private var popv: NSPopover = {
       let p = NSPopover()
       p.behavior = .semitransient
-      p.contentViewController?.view.window?.styleMask = .titled
-
+      p.contentViewController?.view.window?.styleMask = .hudWindow
       return p
     }()
-   
+
    private var wkView: WKWebView = {
       let cnfg = WKWebViewConfiguration()
       let w = WKWebView(frame: NSRect(x: 0,
@@ -53,8 +52,6 @@ class AppDelegate: NSObject,
 	
    private var wind: NSWindow?
    
-   private var timer: Timer?
-   
    var eventMonitor: EventMonitor?
    
    
@@ -65,7 +62,6 @@ class AppDelegate: NSObject,
             popv.show(relativeTo: button.bounds, of: button, preferredEdge: NSRectEdge.minY)
          }
          
-         timer?.invalidate()
          if wkView.url == nil || wkView.url?.absoluteString == "about:blank" {
             openWebPage(site: "https://translate.google.com")
          }
@@ -79,7 +75,13 @@ class AppDelegate: NSObject,
    
    func popoverDidClose(_ notification: Notification) {
       eventMonitor?.stop()
-      startTimer()
+      
+      _ = Timer.scheduledTimer(withTimeInterval: 600,
+                               repeats: false,
+                               block: { (t) in
+                                 t.invalidate()
+                                 self.openWebPage(site: "about:blank")
+                               })
    }
    
    func popoverShouldDetach(_ popover: NSPopover) -> Bool {
@@ -105,20 +107,6 @@ class AppDelegate: NSObject,
    
    @objc func closePopover(_ sender:Any?) {popv.performClose(sender)}
    
-   
-   // MARK: - Timer
-   func startTimer() {
-      self.timer = Timer.scheduledTimer(timeInterval: 600,
-                                        target: self,
-                                        selector: #selector(fireTimer),
-                                        userInfo: nil,
-                                        repeats: false)
-   }
-   
-   @objc func fireTimer() {
-      timer?.invalidate()
-      openWebPage(site: "about:blank")
-   }
 	
    
 	//	MARK: - OBJC FUNC
@@ -191,25 +179,22 @@ class AppDelegate: NSObject,
    private func openWebPage(site: String) {
       wkView.load(URLRequest(url: URL(string: site) ?? URL(string: "about:blank")!))
    }
-   
-   func infoPlistValue(forKey key: String) -> String {
-      guard let v = Bundle.main.object(forInfoDictionaryKey: key) as? String else {return "#"}
-      return v
-}
+
    
    // MARK: - App Notifications
    
    func applicationDidFinishLaunching(_ notification: Notification) {
+      
       // status item
-      if let b = statusItem.button {
-         b.isHidden = false
-         b.image = NSImage(named: "StatBarBtnImg")
-         b.image?.isTemplate = true
-         b.action = #selector(statusItemButtonActivated(sender:))
-         b.sendAction(on: [.leftMouseUp, .rightMouseUp])
-         b.toolTip = "Drag the arrow of the window to pin"
-      }
       statusItem.isVisible = true
+      
+      guard let b = statusItem.button else {return}
+      b.isHidden = false
+      b.image = NSImage(named: "StatBarBtnImg")
+      b.image?.isTemplate = true
+      b.action = #selector(statusItemButtonActivated(sender:))
+      b.sendAction(on: [.leftMouseUp, .rightMouseUp])
+      b.toolTip = "Drag the arrow of the window to pin"
       
       // wkview
       wkView.navigationDelegate = self
@@ -231,7 +216,6 @@ class AppDelegate: NSObject,
       }
       NSApplication.shared.servicesProvider = self
    }
-
    
 } // END App Delegate
 
