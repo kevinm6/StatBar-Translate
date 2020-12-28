@@ -14,9 +14,9 @@
         <customObject id="WcR-9V-yEO" customClass="AppDelegate" customModule="StatBar_Translate" customModuleProvider="target"/>
         <menu title="Main Menu" systemMenu="main" id="Pko-Dn-saA">
             <items>
-                <menuItem title="StatBar Translate" id="ufE-0s-bJu">
+                <menuItem title="StatBarTranslate" id="ufE-0s-bJu">
                     <modifierMask key="keyEquivalentModifierMask"/>
-                    <menu key="submenu" title="StatBar Translate" systemMenu="apple" id="XEx-xg-QYG">
+                    <menu key="submenu" title="StatBarTranslate" systemMenu="apple" id="XEx-xg-QYG">
                         <items>
                             <menuItem title="Quit Quotes" keyEquivalent="q" id="umm-4C-XB9">
                                 <connections>

@@ -13,9 +13,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		0A4F5EDD258E58C300610BBE /* StatBar_Translate.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = StatBar_Translate.entitlements; sourceTree = "<group>"; };
-		0A4F5EDF258E6DBF00610BBE /* MainMenu.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = MainMenu.xib; path = "StatBar Translate/MainMenu.xib"; sourceTree = SOURCE_ROOT; };
-		0ADFD2C6258E2CB5007CC281 /* StatBar Translate.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "StatBar Translate.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		0A4F5EDD258E58C300610BBE /* StatBarTranslate.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = StatBarTranslate.entitlements; sourceTree = "<group>"; };
+		0A4F5EDF258E6DBF00610BBE /* MainMenu.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MainMenu.xib; sourceTree = SOURCE_ROOT; };
+		0ADFD2C6258E2CB5007CC281 /* StatBarTranslate.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = StatBarTranslate.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0ADFD2C9258E2CB5007CC281 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		0ADFD2CB258E2CB8007CC281 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		0ADFD2D0258E2CB8007CC281 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -35,7 +35,7 @@
 		0ADFD2BD258E2CB5007CC281 = {
 			isa = PBXGroup;
 			children = (
-				0ADFD2C8258E2CB5007CC281 /* StatBar Translate */,
+				0ADFD2C8258E2CB5007CC281 /* StatBarTranslate */,
 				0ADFD2C7258E2CB5007CC281 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -43,29 +43,29 @@
 		0ADFD2C7258E2CB5007CC281 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				0ADFD2C6258E2CB5007CC281 /* StatBar Translate.app */,
+				0ADFD2C6258E2CB5007CC281 /* StatBarTranslate.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		0ADFD2C8258E2CB5007CC281 /* StatBar Translate */ = {
+		0ADFD2C8258E2CB5007CC281 /* StatBarTranslate */ = {
 			isa = PBXGroup;
 			children = (
 				0ADFD2C9258E2CB5007CC281 /* AppDelegate.swift */,
 				0A4F5EDF258E6DBF00610BBE /* MainMenu.xib */,
 				0ADFD2CB258E2CB8007CC281 /* Assets.xcassets */,
 				0ADFD2D0258E2CB8007CC281 /* Info.plist */,
-				0A4F5EDD258E58C300610BBE /* StatBar_Translate.entitlements */,
+				0A4F5EDD258E58C300610BBE /* StatBarTranslate.entitlements */,
 			);
-			path = "StatBar Translate";
+			path = StatBarTranslate;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		0ADFD2C5258E2CB5007CC281 /* StatBar Translate */ = {
+		0ADFD2C5258E2CB5007CC281 /* StatBarTranslate */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 0ADFD2D4258E2CB8007CC281 /* Build configuration list for PBXNativeTarget "StatBar Translate" */;
+			buildConfigurationList = 0ADFD2D4258E2CB8007CC281 /* Build configuration list for PBXNativeTarget "StatBarTranslate" */;
 			buildPhases = (
 				0ADFD2C2258E2CB5007CC281 /* Sources */,
 				0ADFD2C3258E2CB5007CC281 /* Frameworks */,
@@ -75,9 +75,9 @@
 			);
 			dependencies = (
 			);
-			name = "StatBar Translate";
+			name = StatBarTranslate;
 			productName = "StatBar Translate";
-			productReference = 0ADFD2C6258E2CB5007CC281 /* StatBar Translate.app */;
+			productReference = 0ADFD2C6258E2CB5007CC281 /* StatBarTranslate.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -108,7 +108,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				0ADFD2C5258E2CB5007CC281 /* StatBar Translate */,
+				0ADFD2C5258E2CB5007CC281 /* StatBarTranslate */,
 			);
 		};
 /* End PBXProject section */
@@ -170,6 +170,7 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_ENTITLEMENTS = StatBarTranslate.entitlements;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -231,6 +232,7 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_ENTITLEMENTS = StatBarTranslate.entitlements;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
@@ -258,21 +260,23 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = "StatBar Translate/StatBar_Translate.entitlements";
+				CODE_SIGN_ENTITLEMENTS = StatBarTranslate/StatBarTranslate.entitlements;
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 281220;
 				DEVELOPMENT_TEAM = "";
 				ENABLE_HARDENED_RUNTIME = NO;
-				INFOPLIST_FILE = "StatBar Translate/Info.plist";
+				INFOPLIST_FILE = StatBarTranslate/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				LOCALIZED_STRING_SWIFTUI_SUPPORT = NO;
 				MARKETING_VERSION = 2.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.kevin.manca.StatBar-Translate";
+				PRODUCT_BUNDLE_IDENTIFIER = com.kevin.manca.StatBarTranslate;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRINGS_FILE_OUTPUT_ENCODING = "UTF-16";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 			};
@@ -284,21 +288,23 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = "StatBar Translate/StatBar_Translate.entitlements";
+				CODE_SIGN_ENTITLEMENTS = StatBarTranslate/StatBarTranslate.entitlements;
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 281220;
 				DEVELOPMENT_TEAM = "";
 				ENABLE_HARDENED_RUNTIME = NO;
-				INFOPLIST_FILE = "StatBar Translate/Info.plist";
+				INFOPLIST_FILE = StatBarTranslate/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				LOCALIZED_STRING_SWIFTUI_SUPPORT = NO;
 				MARKETING_VERSION = 2.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.kevin.manca.StatBar-Translate";
+				PRODUCT_BUNDLE_IDENTIFIER = com.kevin.manca.StatBarTranslate;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRINGS_FILE_OUTPUT_ENCODING = "UTF-16";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
@@ -315,7 +321,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		0ADFD2D4258E2CB8007CC281 /* Build configuration list for PBXNativeTarget "StatBar Translate" */ = {
+		0ADFD2D4258E2CB8007CC281 /* Build configuration list for PBXNativeTarget "StatBarTranslate" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				0ADFD2D5258E2CB8007CC281 /* Debug */,

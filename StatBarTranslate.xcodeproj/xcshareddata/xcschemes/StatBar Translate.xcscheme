@@ -15,8 +15,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "0ADFD2C5258E2CB5007CC281"
-               BuildableName = "StatBar Translate.app"
-               BlueprintName = "StatBar Translate"
+               BuildableName = "StatBarTranslate.app"
+               BlueprintName = "StatBarTranslate"
                ReferencedContainer = "container:StatBarTranslate.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -45,8 +45,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "0ADFD2C5258E2CB5007CC281"
-            BuildableName = "StatBar Translate.app"
-            BlueprintName = "StatBar Translate"
+            BuildableName = "StatBarTranslate.app"
+            BlueprintName = "StatBarTranslate"
             ReferencedContainer = "container:StatBarTranslate.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -62,8 +62,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "0ADFD2C5258E2CB5007CC281"
-            BuildableName = "StatBar Translate.app"
-            BlueprintName = "StatBar Translate"
+            BuildableName = "StatBarTranslate.app"
+            BlueprintName = "StatBarTranslate"
             ReferencedContainer = "container:StatBarTranslate.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
