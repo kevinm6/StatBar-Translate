@@ -20,13 +20,13 @@ class AppDelegate: NSObject,
    var appInfo: (name: String,
                  version: String,
                  build: String) {
-      let b = Bundle.main
-      if let name = b.object(forInfoDictionaryKey: "CFBundleName") as? String,
-         let ver = b.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String,
-         let build = b.object(forInfoDictionaryKey: "CFBundleVersion") as? String {
-
-         return (name, ver, build)
-      } else { return ("StatBar Translate", "#.#", "#.#") }
+      guard let n = Bundle.main.object(forInfoDictionaryKey: "CFBundleName") as? String,
+            let v = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String,
+            let b = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String
+            else {
+               return ("StatBarTranslate","#.#","######")
+            }
+      return (n, v, b)
    }
    
    
@@ -90,7 +90,7 @@ class AppDelegate: NSObject,
    
    func detachableWindow(for popover: NSPopover) -> NSWindow? {
       if let ctrl = popover.contentViewController {
-         ctrl.title = (appInfo.name)   // Window name
+         ctrl.title = ("appInfo.name")   // Window name
          
          wind? = NSWindow()
          wind?.contentViewController = ctrl
@@ -162,8 +162,8 @@ class AppDelegate: NSObject,
 		let s = self.statusItem
 		let m = NSMenu()
 		// 0, 1 -App Info
-		m.addItem(withTitle: appInfo.name, action: nil, keyEquivalent: "")
-		m.addItem(withTitle: "Version \(appInfo.version), Build (\(appInfo.build))" , action: nil, keyEquivalent: "")
+      m.addItem(withTitle: appInfo.name, action: nil, keyEquivalent: "")
+      m.addItem(withTitle: "Version \(appInfo.version), Build (\(appInfo.build))" , action: nil, keyEquivalent: "")
 		// 2
 		m.addItem(NSMenuItem.separator())
       // 3
@@ -188,13 +188,14 @@ class AppDelegate: NSObject,
                 of: (NSApp.mainWindow?.contentView)!, preferredEdge: NSRectEdge.minY)
    }
    
-   func openWebPage(site: String) {
-      if let u = URL(string: site) {
-      let r = URLRequest(url: u)
-         wkView.load(r)
-      }
+   private func openWebPage(site: String) {
+      wkView.load(URLRequest(url: URL(string: site) ?? URL(string: "about:blank")!))
    }
    
+   func infoPlistValue(forKey key: String) -> String {
+      guard let v = Bundle.main.object(forInfoDictionaryKey: key) as? String else {return "#"}
+      return v
+}
    
    // MARK: - App Notifications
    
@@ -230,6 +231,7 @@ class AppDelegate: NSObject,
       }
       NSApplication.shared.servicesProvider = self
    }
+
    
 } // END App Delegate
 
@@ -260,3 +262,6 @@ public class EventMonitor {
       }
    }
 }
+
+
+
