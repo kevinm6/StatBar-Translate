@@ -95,7 +95,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 0ADFD2C1258E2CB5007CC281 /* Build configuration list for PBXProject "StatBar Translate" */;
+			buildConfigurationList = 0ADFD2C1258E2CB5007CC281 /* Build configuration list for PBXProject "StatBarTranslate" */;
 			compatibilityVersion = "Xcode 12.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -306,7 +306,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		0ADFD2C1258E2CB5007CC281 /* Build configuration list for PBXProject "StatBar Translate" */ = {
+		0ADFD2C1258E2CB5007CC281 /* Build configuration list for PBXProject "StatBarTranslate" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				0ADFD2D2258E2CB8007CC281 /* Debug */,
