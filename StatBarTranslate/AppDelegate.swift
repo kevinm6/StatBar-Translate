@@ -144,16 +144,16 @@ class AppDelegate: NSObject,
 	// MARK: - Construct Menu
 	func buildMenu() {
 		let m = NSMenu()
-      let sep: Void = m.addItem(NSMenuItem.separator())
+
 		// 0, 1 -App Info
       m.addItem(withTitle: appInfo.name, action: nil, keyEquivalent: "")
       m.addItem(withTitle: "Version \(appInfo.version), Build (\(appInfo.build))" , action: nil, keyEquivalent: "")
 		// 2
-		sep
+      m.addItem(NSMenuItem.separator())
       // 3
       m.addItem(NSMenuItem(title: "Remove cache & cookies", action: #selector(cleanCacheCookies), keyEquivalent: ""))
       // 4
-      sep
+      m.addItem(NSMenuItem.separator())
 		// 5 -Quit application
       m.addItem(NSMenuItem(title: "Quit", action: #selector(NSApplication.shared.terminate(_:)), keyEquivalent: "q"))
 		
@@ -179,70 +179,6 @@ class AppDelegate: NSObject,
       wkView.load(URLRequest(url: URL(string: site) ?? URL(string: "about:blank")!))
    }
 
-   static func getCarbonFlagsFromCocoaFlags(cocoaFlags: NSEvent.ModifierFlags) -> UInt32 {
-    let flags = cocoaFlags.rawValue
-    var newFlags: Int = 0
-
-    if ((flags & NSEvent.ModifierFlags.control.rawValue) > 0) {
-      newFlags |= controlKey
-    }
-
-    if ((flags & NSEvent.ModifierFlags.command.rawValue) > 0) {
-      newFlags |= cmdKey
-    }
-
-    if ((flags & NSEvent.ModifierFlags.shift.rawValue) > 0) {
-      newFlags |= shiftKey;
-    }
-
-    if ((flags & NSEvent.ModifierFlags.option.rawValue) > 0) {
-      newFlags |= optionKey
-    }
-
-    if ((flags & NSEvent.ModifierFlags.capsLock.rawValue) > 0) {
-      newFlags |= alphaLock
-    }
-
-    return UInt32(newFlags);
-   }
-
-   static func register(sender: Any?, for keyCode: Int) {
-
-    var hotKeyRef: EventHotKeyRef?
-    let modifierFlags: UInt32 =
-      getCarbonFlagsFromCocoaFlags(cocoaFlags: .command)
-
-    let keyC = keyCode            // Key to press
-    var gMyHotKeyID = EventHotKeyID()
-
-    gMyHotKeyID.id = UInt32(keyC)
-
-    // Not sure what "swat" vs "htk1" do.
-    gMyHotKeyID.signature = OSType("swat".fourCharCodeValue)
-    // gMyHotKeyID.signature = OSType("htk1".fourCharCodeValue)
-
-    var eventType = EventTypeSpec()
-    eventType.eventClass = OSType(kEventClassKeyboard)
-    eventType.eventKind = OSType(kEventHotKeyReleased)
-
-    // Install handler.
-    InstallEventHandler(GetApplicationEventTarget(), {
-      (nextHanlder, theEvent, userData) -> OSStatus in
-      NSLog("Command + G Released!")
-      
-      return noErr
-      /// Check that hkCom in indeed your hotkey ID and handle it.
-    }, 1, &eventType, nil, nil)
-
-    // Register hotkey.
-    let status = RegisterEventHotKey(UInt32(keyC),
-                                     modifierFlags,
-                                     gMyHotKeyID,
-                                     GetApplicationEventTarget(),
-                                     0,
-                                     &hotKeyRef)
-    assert(status == noErr)
-   }
    
    // MARK: - App Notifications
    
@@ -277,26 +213,7 @@ class AppDelegate: NSObject,
          }
       }
       NSApplication.shared.servicesProvider = self
-   
-      AppDelegate.register(sender: b, for: kVK_ANSI_G)
    }
 
    
 } // END App Delegate
-
-
-extension String {
-/// This converts string to UInt as a fourCharCode
-public var fourCharCodeValue: Int {
- var result: Int = 0
- if let data = self.data(using: String.Encoding.macOSRoman) {
-   data.withUnsafeBytes({ (rawBytes) in
-     let bytes = rawBytes.bindMemory(to: UInt8.self)
-     for i in 0 ..< data.count {
-       result = result << 8 + Int(bytes[i])
-     }
-   })
- }
- return result
-}
-}
