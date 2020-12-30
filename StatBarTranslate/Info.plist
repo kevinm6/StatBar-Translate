@@ -36,12 +36,12 @@
 			<key>NSMenuItem</key>
 			<dict>
 				<key>default</key>
-				<string>Translate in StatBar</string>
+				<string>Translate with StatBar</string>
 			</dict>
 			<key>NSMessage</key>
 			<string>translateService</string>
 			<key>NSPortName</key>
-			<string>StatBar Translate</string>
+			<string>StatBarTranslate</string>
 			<key>NSRequiredContext</key>
 			<dict>
 				<key>NSServiceCategory</key>

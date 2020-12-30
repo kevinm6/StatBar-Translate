@@ -5,8 +5,9 @@
 //  Created by Kevin Manca on 20/12/20.
 //
 
-import Cocoa
+import Foundation
 import WebKit
+import Carbon
 
 @NSApplicationMain
 class AppDelegate: NSObject,
@@ -16,7 +17,7 @@ class AppDelegate: NSObject,
                    WKNavigationDelegate {
    
    
-   // MARK: - Application Infos
+   // MARK: - App Infos
    var appInfo: (name: String,
                  version: String,
                  build: String) {
@@ -38,7 +39,7 @@ class AppDelegate: NSObject,
       p.behavior = .semitransient
       p.contentViewController?.view.window?.styleMask = .hudWindow
       return p
-    }()
+   }()
 
    private var wkView: WKWebView = {
       let cnfg = WKWebViewConfiguration()
@@ -56,18 +57,18 @@ class AppDelegate: NSObject,
    
    
    // MARK: - Popover
-   @objc func showPopover(sender: AnyObject?, show: Bool) {
+   func showPopover(sender: AnyObject?, show: Bool) {
       if show {
-         if let button = statusItem.button {
-            popv.show(relativeTo: button.bounds, of: button, preferredEdge: NSRectEdge.minY)
+         if let b = statusItem.button {
+            popv.show(relativeTo: b.bounds,
+                      of: b,
+                      preferredEdge: NSRectEdge.minY)
          }
          
          if wkView.url == nil || wkView.url?.absoluteString == "about:blank" {
-            openWebPage(site: "https://translate.google.com")
+            openWebPage(site: "https://translate.google.com/")
          }
-      } else {
-         popv.performClose(sender)
-      }
+      } else {popv.performClose(sender)}
       
 	}
  
@@ -92,8 +93,8 @@ class AppDelegate: NSObject,
    
    func detachableWindow(for popover: NSPopover) -> NSWindow? {
       if let ctrl = popover.contentViewController {
-         ctrl.title = ("appInfo.name")   // Window name
-         
+         ctrl.title = appInfo.name   // Window name
+
          wind? = NSWindow()
          wind?.contentViewController = ctrl
          wind?.isMovable = true
@@ -105,16 +106,13 @@ class AppDelegate: NSObject,
       } else {return NSWindow()}
    }
    
-   @objc func closePopover(_ sender:Any?) {popv.performClose(sender)}
-   
-	
    
 	//	MARK: - OBJC FUNC
 	
 	@objc func statusItemButtonActivated(sender: AnyObject?) {
 		let ev = NSApp.currentEvent!
       
-      if popv.isShown {closePopover(sender)}
+      if popv.isShown {popv.performClose(sender)}
       if (wind != nil) {wind?.performClose(sender)}
       
 		switch ev.type {
@@ -122,17 +120,15 @@ class AppDelegate: NSObject,
 			if !popv.isShown {
 				showPopover(sender: sender, show: true)
          }
-			if (ev.modifierFlags == .option) || (ev.modifierFlags == .control) {buildContextMenu()}
+			if (ev.modifierFlags == .option) || (ev.modifierFlags == .control) {buildMenu()}
          
-		case .rightMouseUp: buildContextMenu()
+		case .rightMouseUp: buildMenu()
 			
 		default: break
 		}
 	}
-
-	@objc func quitApp(_ sender: Any) {NSApplication.shared.terminate(self)}
    
-   // cleaning func
+   /// Clean all the caches and cookies stored
    @objc func cleanCacheCookies() {
         HTTPCookieStorage.shared.removeCookies(since: Date.distantPast)
 
@@ -143,36 +139,39 @@ class AppDelegate: NSObject,
         }
       openWebPage(site: "about:blank")
     }
+ 
    
-   
-	// MARK: - construct menu
-	func buildContextMenu() {
-		let s = self.statusItem
+	// MARK: - Construct Menu
+	func buildMenu() {
 		let m = NSMenu()
+      let sep: Void = m.addItem(NSMenuItem.separator())
 		// 0, 1 -App Info
       m.addItem(withTitle: appInfo.name, action: nil, keyEquivalent: "")
       m.addItem(withTitle: "Version \(appInfo.version), Build (\(appInfo.build))" , action: nil, keyEquivalent: "")
 		// 2
-		m.addItem(NSMenuItem.separator())
+		sep
       // 3
       m.addItem(NSMenuItem(title: "Remove cache & cookies", action: #selector(cleanCacheCookies), keyEquivalent: ""))
       // 4
-      m.addItem(NSMenuItem.separator())
+      sep
 		// 5 -Quit application
-		m.addItem(NSMenuItem(title: "Quit", action: #selector(quitApp(_:)), keyEquivalent: "q"))
+      m.addItem(NSMenuItem(title: "Quit", action: #selector(NSApplication.shared.terminate(_:)), keyEquivalent: "q"))
 		
-		s.menu = m
-		s.button?.performClick(nil)
-		s.menu = nil
+      self.statusItem.menu = m
+      self.statusItem.button?.performClick(nil)
+      self.statusItem.menu = nil
 	}
 
 	
    // MARK: - helper funcs
-   func translateService(pboard: NSPasteboard, userData: String, error: AutoreleasingUnsafeMutablePointer<NSString?>) {
-      popv.show(relativeTo: NSRect.init(x: 0,
-                                        y: 0,
-                                        width: 100,
-                                        height: 100),
+   func translateService(pboard: NSPasteboard,
+                         userData: String,
+                         error: AutoreleasingUnsafeMutablePointer<NSString?>) {
+      NSLog("Opening StatBarTranslate")
+      popv.show(relativeTo: NSRect(x: 0,
+                                   y: 0,
+                                   width: 100,
+                                   height: 100),
                 of: (NSApp.mainWindow?.contentView)!, preferredEdge: NSRectEdge.minY)
    }
    
@@ -180,21 +179,84 @@ class AppDelegate: NSObject,
       wkView.load(URLRequest(url: URL(string: site) ?? URL(string: "about:blank")!))
    }
 
+   static func getCarbonFlagsFromCocoaFlags(cocoaFlags: NSEvent.ModifierFlags) -> UInt32 {
+    let flags = cocoaFlags.rawValue
+    var newFlags: Int = 0
+
+    if ((flags & NSEvent.ModifierFlags.control.rawValue) > 0) {
+      newFlags |= controlKey
+    }
+
+    if ((flags & NSEvent.ModifierFlags.command.rawValue) > 0) {
+      newFlags |= cmdKey
+    }
+
+    if ((flags & NSEvent.ModifierFlags.shift.rawValue) > 0) {
+      newFlags |= shiftKey;
+    }
+
+    if ((flags & NSEvent.ModifierFlags.option.rawValue) > 0) {
+      newFlags |= optionKey
+    }
+
+    if ((flags & NSEvent.ModifierFlags.capsLock.rawValue) > 0) {
+      newFlags |= alphaLock
+    }
+
+    return UInt32(newFlags);
+   }
+
+   static func register(sender: Any?, for keyCode: Int) {
+
+    var hotKeyRef: EventHotKeyRef?
+    let modifierFlags: UInt32 =
+      getCarbonFlagsFromCocoaFlags(cocoaFlags: .command)
+
+    let keyC = keyCode            // Key to press
+    var gMyHotKeyID = EventHotKeyID()
+
+    gMyHotKeyID.id = UInt32(keyC)
+
+    // Not sure what "swat" vs "htk1" do.
+    gMyHotKeyID.signature = OSType("swat".fourCharCodeValue)
+    // gMyHotKeyID.signature = OSType("htk1".fourCharCodeValue)
+
+    var eventType = EventTypeSpec()
+    eventType.eventClass = OSType(kEventClassKeyboard)
+    eventType.eventKind = OSType(kEventHotKeyReleased)
+
+    // Install handler.
+    InstallEventHandler(GetApplicationEventTarget(), {
+      (nextHanlder, theEvent, userData) -> OSStatus in
+      NSLog("Command + G Released!")
+      
+      return noErr
+      /// Check that hkCom in indeed your hotkey ID and handle it.
+    }, 1, &eventType, nil, nil)
+
+    // Register hotkey.
+    let status = RegisterEventHotKey(UInt32(keyC),
+                                     modifierFlags,
+                                     gMyHotKeyID,
+                                     GetApplicationEventTarget(),
+                                     0,
+                                     &hotKeyRef)
+    assert(status == noErr)
+   }
    
    // MARK: - App Notifications
    
    func applicationDidFinishLaunching(_ notification: Notification) {
-      
       // status item
       statusItem.isVisible = true
       
-      guard let b = statusItem.button else {return}
+      guard let b = statusItem.button else {fatalError("Can't get status item.")}
       b.isHidden = false
       b.image = NSImage(named: "StatBarBtnImg")
       b.image?.isTemplate = true
       b.action = #selector(statusItemButtonActivated(sender:))
       b.sendAction(on: [.leftMouseUp, .rightMouseUp])
-      b.toolTip = "Drag the arrow of the window to pin"
+      b.toolTip = "Drag the arrow of the window to pin.\nCmd+g to show the app."
       
       // wkview
       wkView.navigationDelegate = self
@@ -215,37 +277,26 @@ class AppDelegate: NSObject,
          }
       }
       NSApplication.shared.servicesProvider = self
+   
+      AppDelegate.register(sender: b, for: kVK_ANSI_G)
    }
+
    
 } // END App Delegate
 
 
-// MARK:- EventMonitor
-public class EventMonitor {
-   private var monitor: AnyObject?
-   private let mask: NSEvent.EventTypeMask
-   private let handler: (NSEvent?) -> ()
-
-   public init(mask: NSEvent.EventTypeMask, handler: @escaping (NSEvent?) -> ()) {
-      self.mask = mask
-      self.handler = handler
-   }
-
-   deinit {
-      self.stop()
-   }
-
-   public func start() {
-      self.monitor = NSEvent.addGlobalMonitorForEvents(matching: mask, handler: handler) as AnyObject?
-   }
-
-   public func stop() {
-      if self.monitor != nil {
-         NSEvent.removeMonitor(self.monitor!)
-         self.monitor = nil
-      }
-   }
+extension String {
+/// This converts string to UInt as a fourCharCode
+public var fourCharCodeValue: Int {
+ var result: Int = 0
+ if let data = self.data(using: String.Encoding.macOSRoman) {
+   data.withUnsafeBytes({ (rawBytes) in
+     let bytes = rawBytes.bindMemory(to: UInt8.self)
+     for i in 0 ..< data.count {
+       result = result << 8 + Int(bytes[i])
+     }
+   })
+ }
+ return result
 }
-
-
-
+}
