@@ -169,11 +169,6 @@ class AppDelegate: NSObject,
                          error: AutoreleasingUnsafeMutablePointer<NSString?>) {
     NSLog("Opening StatBarTranslate")
     showPopover(sender: NSApp.currentEvent, show: true)
-//      popv.show(relativeTo: NSRect(x: 0,
-//                                   y: 0,
-//                                   width: 100,
-//                                   height: 100),
-//                of: (NSApp.mainWindow?.contentView)!, preferredEdge: NSRectEdge.minY)
    }
    
    private func openWebPage(site: String) {
