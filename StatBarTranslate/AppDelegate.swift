@@ -34,7 +34,7 @@ class AppDelegate: NSObject,
    // MARK: - vars
    private var statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
    
-   private var popv: NSPopover = {
+    private var popv: NSPopover = {
       let p = NSPopover()
       p.behavior = .semitransient
       p.contentViewController?.view.window?.styleMask = .hudWindow
@@ -168,7 +168,15 @@ class AppDelegate: NSObject,
                          userData: String,
                          error: AutoreleasingUnsafeMutablePointer<NSString?>) {
     NSLog("Opening StatBarTranslate")
-    showPopover(sender: NSApp.currentEvent, show: true)
+//    showPopover(sender: NSApp.currentEvent, show: true)
+    if !popv.isShown {
+        popv = NSPopover()
+    }
+    popv.show(relativeTo: NSRect(x: 0,
+                               y: 0,
+                               width: 100,
+                               height: 100),
+    of: (NSApp.mainWindow?.contentView)!, preferredEdge: NSRectEdge.minY)
    }
    
    private func openWebPage(site: String) {
