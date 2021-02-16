@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		0A2601AC259A70F400797F47 /* EventMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A2601AB259A70F400797F47 /* EventMonitor.swift */; };
+		0A36F91625DBC0C800FDD7D5 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A36F91525DBC0C800FDD7D5 /* WebKit.framework */; };
 		0A4F5EE0258E6DBF00610BBE /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0A4F5EDF258E6DBF00610BBE /* MainMenu.xib */; };
 		0ADFD2CA258E2CB5007CC281 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0ADFD2C9258E2CB5007CC281 /* AppDelegate.swift */; };
 		0ADFD2CC258E2CB8007CC281 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0ADFD2CB258E2CB8007CC281 /* Assets.xcassets */; };
@@ -15,6 +16,7 @@
 
 /* Begin PBXFileReference section */
 		0A2601AB259A70F400797F47 /* EventMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventMonitor.swift; sourceTree = "<group>"; };
+		0A36F91525DBC0C800FDD7D5 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 		0A4F5EDD258E58C300610BBE /* StatBarTranslate.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = StatBarTranslate.entitlements; sourceTree = "<group>"; };
 		0A4F5EDF258E6DBF00610BBE /* MainMenu.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MainMenu.xib; sourceTree = SOURCE_ROOT; };
 		0ADFD2C6258E2CB5007CC281 /* StatBarTranslate.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = StatBarTranslate.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -28,17 +30,27 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0A36F91625DBC0C800FDD7D5 /* WebKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0A36F91425DBC0C800FDD7D5 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				0A36F91525DBC0C800FDD7D5 /* WebKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		0ADFD2BD258E2CB5007CC281 = {
 			isa = PBXGroup;
 			children = (
 				0ADFD2C8258E2CB5007CC281 /* StatBarTranslate */,
 				0ADFD2C7258E2CB5007CC281 /* Products */,
+				0A36F91425DBC0C800FDD7D5 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -268,7 +280,7 @@
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 301220;
+				CURRENT_PROJECT_VERSION = 15.02.2021;
 				DEVELOPMENT_TEAM = "";
 				ENABLE_HARDENED_RUNTIME = NO;
 				INFOPLIST_FILE = StatBarTranslate/Info.plist;
@@ -277,7 +289,7 @@
 					"@executable_path/../Frameworks",
 				);
 				LOCALIZED_STRING_SWIFTUI_SUPPORT = NO;
-				MARKETING_VERSION = 2.0.1;
+				MARKETING_VERSION = 2.0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.kevin.manca.StatBarTranslate;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRINGS_FILE_OUTPUT_ENCODING = "UTF-16";
@@ -296,7 +308,7 @@
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 301220;
+				CURRENT_PROJECT_VERSION = 15.02.2021;
 				DEVELOPMENT_TEAM = "";
 				ENABLE_HARDENED_RUNTIME = NO;
 				INFOPLIST_FILE = StatBarTranslate/Info.plist;
@@ -305,7 +317,7 @@
 					"@executable_path/../Frameworks",
 				);
 				LOCALIZED_STRING_SWIFTUI_SUPPORT = NO;
-				MARKETING_VERSION = 2.0.1;
+				MARKETING_VERSION = 2.0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.kevin.manca.StatBarTranslate;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRINGS_FILE_OUTPUT_ENCODING = "UTF-16";

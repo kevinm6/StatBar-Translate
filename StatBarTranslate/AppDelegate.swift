@@ -15,8 +15,8 @@ class AppDelegate: NSObject,
                    NSMenuDelegate,
                    NSPopoverDelegate,
                    WKNavigationDelegate {
-   
-   
+
+
    // MARK: - App Infos
    var appInfo: (name: String,
                  version: String,
@@ -167,12 +167,13 @@ class AppDelegate: NSObject,
    func translateService(pboard: NSPasteboard,
                          userData: String,
                          error: AutoreleasingUnsafeMutablePointer<NSString?>) {
-      NSLog("Opening StatBarTranslate")
-      popv.show(relativeTo: NSRect(x: 0,
-                                   y: 0,
-                                   width: 100,
-                                   height: 100),
-                of: (NSApp.mainWindow?.contentView)!, preferredEdge: NSRectEdge.minY)
+    NSLog("Opening StatBarTranslate")
+    showPopover(sender: NSApp.currentEvent, show: true)
+//      popv.show(relativeTo: NSRect(x: 0,
+//                                   y: 0,
+//                                   width: 100,
+//                                   height: 100),
+//                of: (NSApp.mainWindow?.contentView)!, preferredEdge: NSRectEdge.minY)
    }
    
    private func openWebPage(site: String) {
